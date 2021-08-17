@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker 
+
+before_install: 
+  - docker build -t basiliofarach/react-test -f ./client/Dockerfile.dev ./client 
+
+script: 
+  - docker run -e CI=true  basiliofarach/react-test npm test
+
+after_success:
+  - docker build -t basiliofarach/multi-client ./client
+  - docker build -t basiliofarach/multi-nginx ./nginx
+  - docker build -t basiliofarach/multi-server ./server
+  - docker build -t basiliofarach/multi-worker ./worker
+  # Login to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin 
+  - docker push basiliofarach/multi-client
+  - docker push basiliofarach/multi-nginx
+  - docker push basiliofarach/multi-server
+  - docker push basiliofarach/multi-worker 
