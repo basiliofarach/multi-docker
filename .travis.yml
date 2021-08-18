@@ -19,3 +19,15 @@ after_success:
   - docker push basiliofarach/multi-nginx
   - docker push basiliofarach/multi-server
   - docker push basiliofarach/multi-worker 
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker
+  env: Multidocker-env 
+  bucket_name: elasticbeanstalk-us-east-2-799526442056
+  bucket_path: docker-multi
+  on: 
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY 
